@@ -131,7 +131,6 @@ def pretty(*objects, sep=' ', end='\n', log=None, header='', color="\033[93m"):
         - None: This function does not return any value.
     Example:
         - pretty("Hello", "World", header="Greeting:", color="\033[92m")
-    todo: save log
     """
     if not log is None:
         print('source:', log)

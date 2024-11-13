@@ -1,6 +1,6 @@
 ﻿fonttools==4.53.0
 geopy==2.3.0
-imageio
+imageio==2.16.2
 matplotlib==3.9.0
 natsort==8.4.0
 numpy==1.26.2
