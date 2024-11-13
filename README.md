@@ -143,4 +143,19 @@ conda install ipykernel
 
 ## License
 
-This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [CC Y 4.0 License](https://creativecommons.org/licenses/by/4.0/).
+
+## Paper Link
+The paper can be downloaded from [this link](https://www.arxiv.org/abs/2410.02003). Please cite our paper when using the dataset:
+
+```
+@misc{dajkhosh2024skyaisimopensourcesimulation,
+      title={SkyAI Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data},
+      author={S. Parisa Dajkhosh and Peter M. Le and Orges Furxhi and Eddie L. Jacobs},
+      year={2024},
+      eprint={2410.02003},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2410.02003},
+}
+```
