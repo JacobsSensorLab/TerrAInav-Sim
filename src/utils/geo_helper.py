@@ -435,7 +435,7 @@ def geo2utm(lat: float, lon: float, epsg: str) -> Tuple[float, float]:
     return x, y
 
 
-def utm2geo(x: float, y: float, epsg: str = consts.ARGS.utm) -> Tuple[float, float]:
+def utm2geo(x: float, y: float, epsg: str) -> Tuple[float, float]:
     """
     Converts UTM coordinates to geographic coordinates.
     Parameters:
