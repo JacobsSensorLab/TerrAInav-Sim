@@ -140,10 +140,10 @@ class SkyAI(VBN, ImageData):
         self.log.center.lat = (top_left[0] + bottom_right[0]) / 2
         self.log.center.lon = (top_left[1] + bottom_right[1]) / 2
 
+        # calculate the utm zone automatically based on the center of the map
         utm = geo_helper.get_utm_epsg((self.log.center.lat, self.log.center.lon))
-        if self.args.utm != utm:
-            self.args.utm = utm
-            pretty('Changing UTM Zone to', utm, log=self, header='Warning!')
+        self.args.utm = utm
+        
         ## Convert geolocation of the raster corners to utm
         # TL and BR points
         self.assign_log('top_left', ['x_utm', 'y_utm'],
@@ -204,7 +204,7 @@ class SkyAI(VBN, ImageData):
             io_helper.save_namespace(self.log, file)
         print(map_name)
         if map_name not in os.listdir(self.data_dir):
-            geo_helper.get_static_map_image(
+            geo_helper.get_map_image(
                 map_response,
                 self.data_dir / map_name,
                 )
@@ -425,7 +425,7 @@ class SkyAI(VBN, ImageData):
                             zoom=raster_zoom,
                             size=im_size
                             )
-                        geo_helper.get_static_map_image(
+                        geo_helper.get_map_image(
                             img_response,
                             output_dir
                             )

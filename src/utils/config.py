@@ -50,11 +50,6 @@ def parse_args():
             'default': [4, 3],
             'help': 'Aspect ratio dimensions.'
         },
-        'utm': {
-            'type': str,
-            'default': 'EPSG:32616',
-            'help': 'Specify the aspect ratio dimensions (width and height) for the output, e.g., 4 3 for a 4:3 ratio.'
-            },
         'map_type':{
             'type':str,
             'default': 'satellite',

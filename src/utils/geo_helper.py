@@ -18,7 +18,7 @@ from src.utils import consts
 from src.utils.io_helper import pretty
 
 
-def get_static_map_image(response, data_dir: str, retry: int=10
+def get_map_image(response, data_dir: str, retry: int=10
     ):
     """Get a static map image from Google Maps API given
     latitude and longitude coordinates, map type, zoom level, size, and API key if available.
@@ -84,7 +84,35 @@ def init_static_map(coords: Tuple[float, float],
         return base_url + "?" \
         + "&".join([f"{key}={value}" for key, value in params.items()])
     return requests.get(base_url, params=params)
-    return response
+
+
+def init_tile_map(coords: Tuple[float, float],
+    map_type: str, zoom: int, size: Tuple[int, int]=(256, 256)):
+    """Get a static map image from Google Maps API given
+    latitude and longitude coordinates, map type, zoom level, size, and API key if available.
+    Parameters:
+        - coords (tuple): Latitude and Longitude coordinate.
+        - map_type (str): Type of map to retrieve.
+        - zoom (int): Zoom level of the map, default is 15.
+        - size (tuple): Size of the map image in pixels, default is (640, 640).
+    Processing Logic:
+        - Constructs base URL and parameters for url.
+        - Removes labels from the map image.
+        - Constructs final URL.
+    """
+    layers = {'satellite':'s&x', 'roadmap':'m&x'}
+    # Calculate tile coordinates
+    [lat, lon] = coords
+    n = 2 ** zoom
+    tile_x = int((lon + 180.0) / 360.0 * n)
+    tile_y = int((1.0 - math.log(math.tan(math.radians(lat)) \
+        + 1.0 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n)
+
+    # Generate URL s&x for sat, m&x for roadmap
+    url = f"https://mt.google.com/vt/lyrs={layers[map_type]}={tile_x}&y={tile_y}&z={zoom}"
+
+    return url
+
 
 def calc_bbox_api(
     center: Tuple[float, float], zoom: int,
@@ -384,7 +412,7 @@ def haversine_distance(coords):
     return distance * 1000
 
 
-def geo2utm(lat: float, lon: float, epsg: str = consts.ARGS.utm) -> Tuple[float, float]:
+def geo2utm(lat: float, lon: float, epsg: str) -> Tuple[float, float]:
     """
     Converts geographic coordinates to UTM coordinates.
     Parameters:
