@@ -187,7 +187,7 @@ class SkyAI(VBN, ImageData):
 
         map_img = geo_helper.collect_tiles(
             [self.log.top_left.lat, self.log.top_left.lon],
-            [self.log.top_left.lat, self.log.top_left.lon]
+            [self.log.bottom_right.lat, self.log.bottom_right.lon]
             zoom=map_zoom,
             map_type=self.map_type,
             resolution=2,
@@ -425,10 +425,7 @@ class SkyAI(VBN, ImageData):
                             zoom=raster_zoom,
                             size=im_size
                             )
-                        geo_helper.get_map_image(
-                            img_response,
-                            output_dir
-                            )
+                        img.save(output_dir)
                         x += raster_wx * (100 - overlap) / 100
                         _, lamda = geo_helper.utm2geo(x, y, self.args.utm)
 
