@@ -30,7 +30,8 @@ SAMPLE_DIR = PROJ_DIR / 'sampled_ml_imgs'
 IMG_SIZE = (400, 400, 3)
 
 # center of mercator projection tile in pixels
-tile_center_p = {'x': 128, 'y': 128}
+tile_size = 256
+tile_center_p = {'x': tile_size/2, 'y': tile_size/2}
 
 # number of pixels per degree of longitude at zoom 0
 pixel_per_degree = 256 / 360

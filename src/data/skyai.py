@@ -126,6 +126,7 @@ class SkyAI(VBN, ImageData):
             slightly different than the area captured by images in geo_helper.geo_calcs
 
         :return:
+        # todo: test new changes in this function
         """
         top_left = self.args.coords[0], self.args.coords[1]
         bottom_right = self.args.coords[2], self.args.coords[3]
@@ -182,14 +183,15 @@ class SkyAI(VBN, ImageData):
                 + str(self.args.fov) + '_' \
                     + str(self.args.aspect_ratio[0]) + '_'\
                         + str(self.args.aspect_ratio[1]) + ".jpg"
-        map_response = geo_helper.init_tile_map(
-            [self.log.center.lat, self.log.center.lon],
-            self.map_type,
-            map_zoom,
-            map_size
-        )
 
-        self.log.map_url = map_response
+
+        map_img = geo_helper.collect_tiles(
+            [self.log.top_left.lat, self.log.top_left.lon],
+            [self.log.top_left.lat, self.log.top_left.lon]
+            zoom=map_zoom,
+            map_type=self.map_type,
+            resolution=2,
+        )
 
         pretty('Data detailed values before download:')
         pprint.pp(self.log)
@@ -198,13 +200,11 @@ class SkyAI(VBN, ImageData):
         io_helper.check_folder(self.data_dir / 'logs')
         with open(self.data_dir / 'logs' / self.log.filename, 'w') as file:
             # Save the namespace to the file
-            io_helper.save_namespace(self.log, file)
+            io_helper.save_namespace(self.log, file=file)
         print(map_name)
         if map_name not in os.listdir(self.data_dir):
-            geo_helper.get_map_image(
-                map_response,
-                self.data_dir / map_name,
-                )
+
+            map_img.save(self.data_dir / map_name)
         else:
             pretty('Map image is available in', self.data_dir, 'as', map_name,
                    log=self)
@@ -317,6 +317,7 @@ class SkyAI(VBN, ImageData):
             - None: The function does not return any value but downloads the raster images to the specified directory.
         Example:
             - gen_raster_from_map((34.052235, -118.243683), (34.040713, -118.246769))
+            todo: rewrite with new changes in map tile api
         """
         ## Start Raster from TL of the map
         # get coordinates of the corners
@@ -411,12 +412,14 @@ class SkyAI(VBN, ImageData):
 
                         out_name = str(i) + '_' \
                                 + str(j) + '_' \
-                                + str(phi) \
-                                + '_' + str(lamda) \
+                                + str(round(phi, 8)) \
+                                + '_' + str(round(lamda, 8)) \
                                 + '_' + str(raster_zoom) + '.jpg'
 
                         output_dir = self.data_dir / self.data_info['x'] / out_name
-                        img_response = geo_helper.init_static_map(
+
+                        # todo: change from here (get tl, br for phi, lambda)
+                        img = geo_helper.collect_tiles(
                             [phi, lamda],
                             map_type=self.map_type,
                             zoom=raster_zoom,

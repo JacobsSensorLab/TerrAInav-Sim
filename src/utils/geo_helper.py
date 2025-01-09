@@ -6,6 +6,9 @@
 """
 from typing import Tuple, List
 import math
+import time
+from io import BytesIO
+
 from geopy.distance import geodesic
 from geopy.point import Point
 from matplotlib.streamplot import OutOfBounds
@@ -13,6 +16,9 @@ import pyproj
 import numpy as np
 import tensorflow as tf
 import requests
+from concurrent.futures import ThreadPoolExecutor
+from PIL import Image, ImageDraw
+
 
 from src.utils import consts
 from src.utils.io_helper import pretty
@@ -86,32 +92,67 @@ def init_static_map(coords: Tuple[float, float],
     return requests.get(base_url, params=params)
 
 
-def init_tile_map(coords: Tuple[float, float],
-    map_type: str, zoom: int, size: Tuple[int, int]=(256, 256)):
-    """Get a static map image from Google Maps API given
-    latitude and longitude coordinates, map type, zoom level, size, and API key if available.
-    Parameters:
-        - coords (tuple): Latitude and Longitude coordinate.
-        - map_type (str): Type of map to retrieve.
-        - zoom (int): Zoom level of the map, default is 15.
-        - size (tuple): Size of the map image in pixels, default is (640, 640).
-    Processing Logic:
-        - Constructs base URL and parameters for url.
-        - Removes labels from the map image.
-        - Constructs final URL.
-    """
-    layers = {'satellite':'s&x', 'roadmap':'m&x'}
+def collect_tiles(tl, br, zoom, map_type, resolution):
+    def generate_tile_info(loc, zoom):
+        # Calculate tile coordinates
+        n = 2 ** zoom
+        lat, lon = loc
+        tile_x = (lon + 180.0) / 360.0 * n
+        tile_y = (1.0 - math.log(math.tan(math.radians(lat)) + 1.0 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n
+
+        pixel_x = int(tile_x * 256 - int(tile_x) * 256)
+        pixel_y = int(tile_y * 256 - int(tile_y) * 256)
+
+        # Generate URL s&x for sat, m&x for roadmap
+        return int(tile_x), int(tile_y), pixel_x, pixel_y
+    def fetch_and_paste(tile_id_x, tile_id_y, map_type):
+        map_types = {'satellite':'s', 'roadmap':'m', 'terrain':'t'}
+
+        try:
+            url = f"https://mt.google.com/vt/lyrs={map_types[map_type]}&x={tile_id_x}&y={tile_id_y}&z={zoom}"
+            # print(url)
+            response = requests.get(url)
+            response.raise_for_status()
+
+            # Load the image into Pillow
+            image = Image.open(BytesIO(response.content))
+
+            # Calculate position to paste the tile in the stitched image
+            offset_x = (tile_id_x - tl_info[0]) * 256
+            offset_y = (tile_id_y - tl_info[1]) * 256
+
+            # Paste the tile onto the stitched image
+            stitched_image.paste(image, (offset_x, offset_y))
+        except Exception as e:
+            print(f"Error fetching tile ({tile_id_x}, {tile_id_y}): {e}")
+
+    zoom = zoom + resolution
+    if zoom > 22:
+        zoom = 22
     # Calculate tile coordinates
-    [lat, lon] = coords
-    n = 2 ** zoom
-    tile_x = int((lon + 180.0) / 360.0 * n)
-    tile_y = int((1.0 - math.log(math.tan(math.radians(lat)) \
-        + 1.0 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n)
+    tl_info = generate_tile_info(tl, zoom)
+    br_info = generate_tile_info(br, zoom)
 
-    # Generate URL s&x for sat, m&x for roadmap
-    url = f"https://mt.google.com/vt/lyrs={layers[map_type]}={tile_x}&y={tile_y}&z={zoom}"
+    # Calculate dimensions of the stitched image
+    n_tiles_x = br_info[0] - tl_info[0] + 1
+    n_tiles_y = br_info[1] - tl_info[1] + 1
 
-    return url
+    img_w = abs(br_info[-2] + 256 * (n_tiles_x - 1)- tl_info[-2])
+    img_h = abs(br_info[-1] + 256 * (n_tiles_y - 1)- tl_info[-1])
+
+    stitched_image = Image.new("RGB",
+                               (n_tiles_x * 256,
+                                n_tiles_y * 256))
+    with ThreadPoolExecutor() as executor:
+        for tile_id_y in range(tl_info[1], br_info[1]+1):
+            for tile_id_x in range(tl_info[0], br_info[0]+1):
+                executor.submit(fetch_and_paste, tile_id_x, tile_id_y, map_type)
+
+    cropped_image = stitched_image.crop((tl_info[-2],
+                                         tl_info[-1],
+                                         tl_info[-2] + img_w,
+                                         tl_info[-1] + img_h))
+    return cropped_image
 
 
 def calc_bbox_api(
@@ -221,13 +262,14 @@ def get_zoom_from_bounds(
     # Convert lat/lon coordinates to points
     cp_top_left = latlonToPt(top_left[0], top_left[1])
     cp_bottom_right = latlonToPt(bottom_right[0], bottom_right[1])
+
     # Calculate half pixel width and height
     half_pw_x = (cp_bottom_right['x'] - cp_top_left['x']) / 2
     half_pw_y = (cp_bottom_right['y'] - cp_top_left['y']) / 2
     # Initialize image size
     # This is the maximum pixel size available on Google Map
     # We get the high resolution first, then resize to the desired dimensions if needed
-    img_size = 640
+    img_size = consts.tile_size
 
     # The bigger width along x or y will be the img_size
     # The other width is adjusted based on aspect ratio
