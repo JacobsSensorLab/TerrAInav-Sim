@@ -326,7 +326,7 @@ class SkyAI(VBN, ImageData):
             center=self.args.coords[:2],
             img_size=[self.log.single_img_size.x_m,
                         self.log.single_img_size.y_m],
-        epsg=self.args.utm)
+            epsg=self.args.utm)
         raster_zoom, im_size = geo_helper.get_zoom_from_bounds(tl, br)
         self.assign_log('single_img_size',
             ['x_pixels', 'y_pixels', 'zoom'],
@@ -418,9 +418,13 @@ class SkyAI(VBN, ImageData):
 
                         output_dir = self.data_dir / self.data_info['x'] / out_name
 
-                        # todo: change from here (get tl, br for phi, lambda)
+                        curr_tl, curr_br = geo_helper.calc_bbox_m(
+                            center_coords=[phi, lamda],
+                            bbox_m=[self.log.single_img_size.x_m,
+                                    self.log.single_img_size.y_m]
+                            )
                         img = geo_helper.collect_tiles(
-                            [phi, lamda],
+                            curr_tl, curr_br,
                             map_type=self.map_type,
                             zoom=raster_zoom,
                             size=im_size

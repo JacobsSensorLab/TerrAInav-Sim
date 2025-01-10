@@ -105,30 +105,36 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
 
         # Generate URL s&x for sat, m&x for roadmap
         return int(tile_x), int(tile_y), pixel_x, pixel_y
-    def fetch_and_paste(tile_id_x, tile_id_y, map_type):
+    def fetch_and_paste(tile_id_x, tile_id_y, map_type, max_retries=10):
         map_types = {'satellite':'s', 'roadmap':'m', 'terrain':'t'}
 
-        try:
-            url = f"https://mt.google.com/vt/lyrs={map_types[map_type]}&x={tile_id_x}&y={tile_id_y}&z={zoom}"
-            # print(url)
-            response = requests.get(url)
-            response.raise_for_status()
+        for attempt in range(1, max_retries + 1):
+            try:
+                url = f"https://mt.google.com/vt/lyrs={map_types[map_type]}&x={tile_id_x}&y={tile_id_y}&z={zoom}"
+                response = requests.get(url)
+                response.raise_for_status()
 
-            # Load the image into Pillow
-            image = Image.open(BytesIO(response.content))
+                # Load the image into Pillow
+                image = Image.open(BytesIO(response.content))
 
-            # Calculate position to paste the tile in the stitched image
-            offset_x = (tile_id_x - tl_info[0]) * 256
-            offset_y = (tile_id_y - tl_info[1]) * 256
+                # Calculate position to paste the tile in the stitched image
+                offset_x = (tile_id_x - tl_info[0]) * 256
+                offset_y = (tile_id_y - tl_info[1]) * 256
 
-            # Paste the tile onto the stitched image
-            stitched_image.paste(image, (offset_x, offset_y))
-        except Exception as e:
-            print(f"Error fetching tile ({tile_id_x}, {tile_id_y}): {e}")
+                # Paste the tile onto the stitched image
+                stitched_image.paste(image, (offset_x, offset_y))
 
-    zoom = zoom + resolution
-    if zoom > 22:
-        zoom = 22
+                # Break the loop if successful
+                break
+            except Exception as e:
+                if attempt < max_retries:
+                    print(f"Attempt {attempt} failed for tile ({tile_id_x}, {tile_id_y}). Retrying...")
+                    time.sleep(1)  # Optional: add a small delay between retries
+                else:
+                    print(f"Error fetching tile ({tile_id_x}, {tile_id_y}) after {max_retries} attempts: {e}")
+
+    zoom = min(zoom + resolution, 22)
+
     # Calculate tile coordinates
     tl_info = generate_tile_info(tl, zoom)
     br_info = generate_tile_info(br, zoom)
