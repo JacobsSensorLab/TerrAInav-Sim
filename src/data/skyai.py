@@ -90,7 +90,7 @@ class SkyAI(VBN, ImageData):
             else kwargs['args'].data_dir
 
         # Add dataset information to the name of the dataset folder
-        data_folder_name = self.map_type + '_' + str(self.overlap)
+        data_folder_name = self.map_type
         self.data_dir = Path(data_dir) / data_folder_name
 
         print(self.args)
@@ -178,14 +178,16 @@ class SkyAI(VBN, ImageData):
                 self.log.n_raster_imgs.y
 
         rounded_strings = [str(round(x, 8)) for x in [self.log.center.lat, self.log.center.lon]]
-        map_name = '_'.join(
-            rounded_strings
-            ) + '_' \
-                + str(self.args.coords[-1]) + '_' \
-                + str(self.args.fov) + '_' \
-                    + str(self.args.aspect_ratio[0]) + '_'\
-                        + str(self.args.aspect_ratio[1]) + ".jpg"
+        self.data_info['x'] += '_' + '_'.join(
+            rounded_strings +\
+            [str(self.args.overlap),
+             str(self.args.coords[-1]),
+             str(self.args.fov),
+             str(self.args.aspect_ratio[0]),
+             str(self.args.aspect_ratio[0])]
+        )
 
+        map_name =  self.data_info['x'] + ".jpg"
 
         map_img = geo_helper.collect_tiles(
             [self.log.top_left.lat, self.log.top_left.lon],
