@@ -5,6 +5,7 @@
     author: spdkh
     date: July 2024, JacobsSensorLab
 """
+import sys
 import enum
 import pandas as pd
 import numpy as np
@@ -12,6 +13,8 @@ from src.utils import consts
 from src.data.skyai import SkyAI
 from src.utils import geo_helper, io_helper
 
+if "--help" in sys.argv:
+    sys.exit(0)
 
 def main():
     """Function:

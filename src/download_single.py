@@ -5,12 +5,17 @@
     author: spdkh
     date: July 2024, JacobsSensorLab
 """
+import sys
 import numpy as np
 import pandas as pd
 from src.utils import consts
 from src.data.skyai import SkyAI
 from src.utils import geo_helper
 
+print("Command-line arguments:", sys.argv)
+
+if "--help" in sys.argv:
+    sys.exit(0)
 
 def main():
     """Function:
@@ -36,15 +41,14 @@ def main():
     except:
         pass
 
-    print(args.coords)
     bbox_m = geo_helper.get_map_dim_m(
         args.fov, args.coords[-1],
         args.aspect_ratio[0]/args.aspect_ratio[1]
         )
-    print(1, args.coords)
+
     bbox = geo_helper.calc_bbox_m(args.coords[:2],
                                   bbox_m)
-    print(2)
+
     args.coords = tuple(np.array(bbox).flatten()) + (args.coords[-1],)
     aerial_data = SkyAI(
         args=args,

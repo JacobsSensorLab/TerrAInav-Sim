@@ -5,9 +5,12 @@
     author: spdkh
     date: June 2024, JacobsSensorLab
 """
+import sys
 from src.utils import consts
 from src.data.skyai import SkyAI
 
+if "--help" in sys.argv:
+    sys.exit(0)
 
 def main():
     """Function:

@@ -67,15 +67,6 @@ def parse_args():
             'default': 'dataset/Memphis/',
             'help': 'Directory name to save the generated images.'
         },
-        'vmargin':{
-            'type': int,
-            'default': 20,
-            'help': ('Vertical margin to capture an image with a size bigger than the inteded dimension,'
-                    'So that the Google sign and additional unwanted text can be removed later for post processing.'
-                    '(You cannot publish your data withouth those texts.)\n'
-                    'For more information check: '
-                    'https://about.google/brand-resource-center/products-and-services/geo-guidelines/#required-attribution/')
-        },
         'img_size': {
             'type': int, 'nargs': '+',
             'default': [400, 400, 3],

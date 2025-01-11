@@ -177,9 +177,11 @@ class SkyAI(VBN, ImageData):
             self.log.n_raster_imgs.x *\
                 self.log.n_raster_imgs.y
 
+        rounded_strings = [str(round(x, 8)) for x in [self.log.center.lat, self.log.center.lon]]
         map_name = '_'.join(
-            list(map(str, self.args.coords))
+            rounded_strings
             ) + '_' \
+                + str(self.args.coords[-1]) + '_' \
                 + str(self.args.fov) + '_' \
                     + str(self.args.aspect_ratio[0]) + '_'\
                         + str(self.args.aspect_ratio[1]) + ".jpg"
@@ -187,7 +189,7 @@ class SkyAI(VBN, ImageData):
 
         map_img = geo_helper.collect_tiles(
             [self.log.top_left.lat, self.log.top_left.lon],
-            [self.log.bottom_right.lat, self.log.bottom_right.lon]
+            [self.log.bottom_right.lat, self.log.bottom_right.lon],
             zoom=map_zoom,
             map_type=self.map_type,
             resolution=2,
@@ -340,11 +342,6 @@ class SkyAI(VBN, ImageData):
         raster_wy = self.log.single_img_size.y_m
         raster_wx = self.log.single_img_size.x_m
 
-        ## Add vertical margins
-        # so that the google mark can be removed later after download
-        # the same margin value has to be applied to the preprocess_image method
-        im_size[1] += int(im_size[1] * self.args.vmargin/100)
-
         n_images_x = self.log.n_raster_imgs.x
         n_images_y = self.log.n_raster_imgs.y
 
@@ -385,10 +382,6 @@ class SkyAI(VBN, ImageData):
 
         i, j = i_last, j_last
 
-        if n_images_x * n_images_y > 5000:
-            pretty('Number of images exceed the publishable limit. Read more at:',
-                   '\nhttps://about.google/brand-resource-center/products-and-services/geo-guidelines/#required-attribution/',
-                   log=self, header='Warning!')
         io_helper.check_folder(self.data_dir / self.data_info['x'])
 
         pretty('Do you want to proceed? (y/yes):', end=' ',
@@ -396,6 +389,7 @@ class SkyAI(VBN, ImageData):
         response = input().strip().lower()
         if response in ["y", "yes"]:
             print("Confirmed.")
+            print(n_images_x, n_images_y)
             with tqdm(position=0, leave=True, total=n_images_x*n_images_y) as pbar:
                 pbar.update((n_images_x*j_last) + i_last)
                 for j in range(j_last, n_images_y):
@@ -425,10 +419,11 @@ class SkyAI(VBN, ImageData):
                             )
                         img = geo_helper.collect_tiles(
                             curr_tl, curr_br,
-                            map_type=self.map_type,
                             zoom=raster_zoom,
-                            size=im_size
+                            map_type=self.map_type,
+                            resolution=2
                             )
+
                         img.save(output_dir)
                         x += raster_wx * (100 - overlap) / 100
                         _, lamda = geo_helper.utm2geo(x, y, self.args.utm)
@@ -489,15 +484,6 @@ class SkyAI(VBN, ImageData):
 
         # Convert the float values to integer by multiplying with the image dimensions
         image_shape = tf.cast(tf.shape(image), tf.float32)
-
-        # crop the google sign from the bottom
-        image = tf.image.crop_to_bounding_box(
-            image,
-            tf.cast(image_shape[0] * 0, dtype=tf.int32),
-            tf.cast(image_shape[1] * self.args.vmargin/200, dtype=tf.int32),
-            tf.cast(image_shape[0] * 1, dtype=tf.int32),
-            tf.cast(image_shape[1] * 1 - self.args.vmargin/200, dtype=tf.int32)
-        )
 
         # resize to the desired shape
         image = tf.image.resize(image, self.input_dim[0:2])
