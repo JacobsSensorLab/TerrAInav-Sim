@@ -93,7 +93,30 @@ def init_static_map(coords: Tuple[float, float],
 
 
 def collect_tiles(tl, br, zoom, map_type, resolution):
+    """
+    Stitch a map image by collecting and assembling map tiles for a given geographical bounding box.
+    Parameters:
+        - tl (tuple): The coordinates (latitude, longitude) of the top-left corner.
+        - br (tuple): The coordinates (latitude, longitude) of the bottom-right corner.
+        - zoom (int): The zoom level for the map tiles.
+        - map_type (str): Type of map ('satellite', 'roadmap', or 'terrain').
+        - resolution (int): Additional resolution level to increase detail.
+    Returns:
+        - Image: A PIL Image object of the stitched map covering the specified region.
+    Example:
+        - collect_tiles((37.7749, -122.4194), (37.7649, -122.4094), 15, 'roadmap', 0) -> <PIL.Image.Image image mode=RGB size=XxY at 0x...>
+    """
     def generate_tile_info(loc, zoom):
+        """
+        Calculate tile coordinates and pixel position for mapping services.
+        Parameters:
+            - loc (tuple): A tuple containing latitude and longitude coordinates.
+            - zoom (int): The zoom level for which the tile information is calculated.
+        Returns:
+            - tuple: A tuple containing the tile x-coordinate, tile y-coordinate, pixel x offset, and pixel y offset.
+        Example:
+            - generate_tile_info((37.7749, -122.4194), 10) -> (163, 395, 103, 120)
+        """
         # Calculate tile coordinates
         n = 2 ** zoom
         lat, lon = loc
@@ -106,6 +129,18 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
         # Generate URL s&x for sat, m&x for roadmap
         return int(tile_x), int(tile_y), pixel_x, pixel_y
     def fetch_and_paste(tile_id_x, tile_id_y, map_type, max_retries=10):
+        """
+        Fetches a map tile from a given map type and pastes it into a larger stitched image.
+        Parameters:
+            - tile_id_x (int): X-coordinate of the tile to be fetched.
+            - tile_id_y (int): Y-coordinate of the tile to be fetched.
+            - map_type (str): Type of map to fetch the tile from ('satellite', 'roadmap', 'terrain').
+            - max_retries (int, optional): The maximum number of retries for fetching the tile. Defaults to 10.
+        Returns:
+            - None
+        Example:
+            - fetch_and_paste(10, 15, 'satellite', 5) -> None
+        """
         map_types = {'satellite':'s', 'roadmap':'m', 'terrain':'t'}
 
         for attempt in range(1, max_retries + 1):
