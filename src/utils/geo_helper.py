@@ -105,6 +105,7 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
         - Image: A PIL Image object of the stitched map covering the specified region.
     Example:
         - collect_tiles((37.7749, -122.4194), (37.7649, -122.4094), 15, 'roadmap', 0) -> <PIL.Image.Image image mode=RGB size=XxY at 0x...>
+    Notebook: https://colab.research.google.com/drive/1p9kFCQbDPRsJJM6RXsrsNySCSGSrTnFc?usp=sharing
     """
     def generate_tile_info(loc, zoom):
         """

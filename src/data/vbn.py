@@ -254,3 +254,13 @@ class VBN(ImageData):
 
     def preprocess_label(self, label):
         return label
+
+    def imread(self, img_path):
+        '''
+            Read Tensorflow image
+        '''
+        image_string = tf.io.read_file(str(img_path))
+        image = tf.image.decode_jpeg(image_string, channels=self.input_dim[-1])
+        image = tf.image.convert_image_dtype(image, tf.uint8)
+
+        return image

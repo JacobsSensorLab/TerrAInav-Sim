@@ -516,5 +516,14 @@ class SkyAI(VBN, ImageData):
         return image
 
     def assign_log(self, feature, log_attrs, values):
+        """
+        Assigns values to specified attributes of a logging feature.
+        Parameters:
+            - feature (str): The name of the log feature to update.
+            - log_attrs (list of str): List of attribute names within the log feature.
+            - values (list): Corresponding list of values to assign to each attribute.
+        Example:
+            - assign_log("error", ["code", "message"], [404, "Not Found"])
+        """
         for attr, value in zip(log_attrs, values):
                 setattr(getattr(self.log, feature), attr, value)
