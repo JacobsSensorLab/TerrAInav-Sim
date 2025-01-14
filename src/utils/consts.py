@@ -15,9 +15,9 @@ try:
 except:
     # To be able to run in google colab
     args = parse_args().parse_args(args=[])
+
 args.coords = str_to_floats(args.coords)
 ARGS = args
-
 # the path corresponding to current file directory
 THIS_DIR = Path(__file__).__str__()
 # the path corresponding to source path

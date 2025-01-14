@@ -27,7 +27,7 @@ def parse_args():
     arguments = {
         'coords': {
             'type': str_to_floats,
-            'default': "35.11878_-89.80659_35.06_-89.73_400",
+            'default': "35.16_-89.90_35.115_-89.823_120",
             'help':(
             'Input can be either a file or a formatted string.\n'
             '1. If a string is entered, it should refer to a file with the following format (lat lon agl(feet)):\n'

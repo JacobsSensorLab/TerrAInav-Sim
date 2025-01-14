@@ -29,6 +29,7 @@ def main():
         - Set overlap to 0 if not specified.
     """
     args = consts.ARGS
+
     aerial_data = SkyAI(
         args=args,
         map_type=args.map_type,

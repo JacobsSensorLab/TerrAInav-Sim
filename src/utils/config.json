@@ -1,7 +1,4 @@
 {
     "seed": 2024,
-    "data_dir": "/home/sdjkhosh/Datasets/Memphis/",
-    "coords":"35.19_-89.94_35.11_-89.8_120",
-    "overlap": 0.6,
-    "map_type": "roadmap"
+    "map_type": "satellite"
 }

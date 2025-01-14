@@ -93,7 +93,6 @@ class SkyAI(VBN, ImageData):
         data_folder_name = self.map_type
         self.data_dir = Path(data_dir) / data_folder_name
 
-        print(self.args)
         img_size = np.round(
                         geo_helper.get_map_dim_m(
                         self.args.fov,
@@ -178,7 +177,7 @@ class SkyAI(VBN, ImageData):
                 self.log.n_raster_imgs.y
 
         rounded_strings = [str(round(x, 8)) for x in [self.log.center.lat, self.log.center.lon]]
-        self.data_info['x'] += '_' + '_'.join(
+        map_label = '_'.join(
             rounded_strings +\
             [str(self.args.overlap),
              str(self.args.coords[-1]),
@@ -186,8 +185,8 @@ class SkyAI(VBN, ImageData):
              str(self.args.aspect_ratio[0]),
              str(self.args.aspect_ratio[0])]
         )
-
-        map_name =  self.data_info['x'] + ".jpg"
+        self.data_info['x'] += '_' + map_label
+        map_name =  map_label + ".jpg"
 
         map_img = geo_helper.collect_tiles(
             [self.log.top_left.lat, self.log.top_left.lon],
@@ -205,7 +204,6 @@ class SkyAI(VBN, ImageData):
         with open(self.data_dir / 'logs' / self.log.filename, 'w') as file:
             # Save the namespace to the file
             io_helper.save_namespace(self.log, file=file)
-        print(map_name)
         if map_name not in os.listdir(self.data_dir):
 
             map_img.save(self.data_dir / map_name)
