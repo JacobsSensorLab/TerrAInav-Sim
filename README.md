@@ -38,14 +38,6 @@ Other versions might be compatible at your own risk. Check compatibility here: h
 
 Check src/notebooks folder.
 
-## Create a GoogleMap API key:
-**This step is for generating your own data.**
-Check how you can create one here: https://developers.google.com/maps/documentation/javascript/get-api-key
-
-Then make a python file in the src folder called: hidden_file.py and add the following line to it:
-
-    api_key='<Your API Key>'
-
 ## Download the Data:
 
 ### A single coordinate
