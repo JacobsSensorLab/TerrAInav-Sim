@@ -1,6 +1,6 @@
-# SkyAI Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data
+# terrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data
 
-Capturing real-world aerial images is challenging due to limited availability and conditions that make it nearly impossible to access all desired images from any location. The complexity increases when multiple locations are involved. Traditional solutions, such as flying a UAV (Unmanned Aerial Vehicle) to take pictures or using existing research databases, have significant limitations. SkyAI Sim offers a compelling alternative by simulating a UAV to capture aerial images with real-world visible-band specifications. This open-source tool allows users to specify the top-left and bottom-right coordinates of any region on a map. Without the need to physically fly a drone, the virtual UAV performs a raster search to capture satellite images using the Google Maps API. Users can define parameters such as flight altitude in meters, aspect ratio and diagonal field of view of the camera, and the overlap between consecutive images. SkyAI Sim's capabilities range from capturing a few low-altitude images for basic applications to generating extensive datasets of entire cities for complex tasks like deep learning. This versatility makes SkyAI a valuable tool for various applications in environmental monitoring, construction, and city management. The open-source nature of the tool also allows for extending the raster search to any other desired path. It is important to note that while the search can theoretically be conducted worldwide, the most accurate results are achieved if users stay within the same or nearby UTM (Universal Transverse Mercator) zone. Therefore, specifying the zone for the program is recommended. Using SkyAI Sim, a few examples of Memphis, TN are also provided.
+Capturing real-world aerial images is challenging due to limited availability and conditions that make it nearly impossible to access all desired images from any location. The complexity increases when multiple locations are involved. Traditional solutions, such as flying a UAV (Unmanned Aerial Vehicle) to take pictures or using existing research databases, have significant limitations. terrAInav Sim offers a compelling alternative by simulating a UAV to capture aerial images with real-world visible-band specifications. This open-source tool allows users to specify the top-left and bottom-right coordinates of any region on a map. Without the need to physically fly a drone, the virtual UAV performs a raster search to capture satellite images using the Google Maps API. Users can define parameters such as flight altitude in meters, aspect ratio and diagonal field of view of the camera, and the overlap between consecutive images. terrAInav Sim's capabilities range from capturing a few low-altitude images for basic applications to generating extensive datasets of entire cities for complex tasks like deep learning. This versatility makes terrAInav a valuable tool for various applications in environmental monitoring, construction, and city management. The open-source nature of the tool also allows for extending the raster search to any other desired path. It is important to note that while the search can theoretically be conducted worldwide, the most accurate results are achieved if users stay within the same or nearby UTM (Universal Transverse Mercator) zone. Therefore, specifying the zone for the program is recommended. Using terrAInav Sim, a few examples of Memphis, TN are also provided.
 
 ## Requirements:
 
@@ -14,8 +14,8 @@ Capturing real-world aerial images is challenging due to limited availability an
 <details>
   <summary>Setup the environment (Highly recommended)</summary>
 
-    conda create -n "skyai-sim" python=3.10
-    conda activate skyai-sim
+    conda create -n "terrAInav-sim" python=3.10
+    conda activate terrAInav-sim
 
 </details>
 
@@ -149,8 +149,8 @@ This project is licensed under the [CC Y 4.0 License](https://creativecommons.or
 The paper can be downloaded from [this link](https://www.arxiv.org/abs/2410.02003). Please cite our paper when using the dataset:
 
 ```
-@misc{dajkhosh2024skyaisimopensourcesimulation,
-      title={SkyAI Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data},
+@misc{dajkhosh2024terrAInavsimopensourcesimulation,
+      title={terrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data},
       author={S. Parisa Dajkhosh and Peter M. Le and Orges Furxhi and Eddie L. Jacobs},
       year={2024},
       eprint={2410.02003},

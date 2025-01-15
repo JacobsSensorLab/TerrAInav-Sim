@@ -7,30 +7,30 @@
 """
 import sys
 from src.utils import consts
-from src.data.skyai import SkyAI
+from src.data.terrainav import terrAInav
 
 if "--help" in sys.argv:
     sys.exit(0)
 
 def main():
     """Function:
-        Generates a SkyAI object with specified parameters.
+        Generates a terrAInav object with specified parameters.
     Parameters:
-        - args (list): List of arguments for the SkyAI object.
+        - args (list): List of arguments for the terrAInav object.
         - map_type (str): Type of map to be generated (default: 'satellite').
         - data_dir (str): Directory to store the generated map data (default: current directory).
         - overlap (int): Amount of overlap between adjacent map tiles (default: 0).
     Returns:
-        - aerial_data (SkyAI): SkyAI object with specified parameters.
+        - aerial_data (terrAInav): terrAInav object with specified parameters.
     Processing Logic:
-        - Generate SkyAI object.
+        - Generate terrAInav object.
         - Set map type to 'satellite' if not specified.
         - Set data directory to current directory if not specified.
         - Set overlap to 0 if not specified.
     """
     args = consts.ARGS
 
-    aerial_data = SkyAI(
+    aerial_data = terrAInav(
         args=args,
         map_type=args.map_type,
         data_dir=args.data_dir,

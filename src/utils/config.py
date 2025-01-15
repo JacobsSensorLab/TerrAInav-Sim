@@ -20,7 +20,7 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser(
-        prog='SkyAI Sim Project',
+        prog='terrAInav Sim Project',
         description='Aerial Imaging Simulation from Satellite Data'
         )
     # Define the arguments in a dictionary
@@ -58,9 +58,9 @@ def parse_args():
         },
         'dataset':{
             'type': str,
-            'default': 'SkyAI',
+            'default': 'terrAInav',
             'help': 'Specify the name of the datset.',
-            'choices': ['SkyAI', 'VBN']
+            'choices': ['terrAInav', 'VBN']
         },
         'data_dir': {
             'type': str,
