@@ -141,12 +141,13 @@ conda install ipykernel
 2.  Always restart the Colab runtime after setting up a custom kernel or installing packages to ensure the changes take effect. Click on "Runtime" in the menu and select "Restart runtime...".
 </details>
 
-## License
+## Licensing Information
 
-This project is licensed under the [CC Y 4.0 License](https://creativecommons.org/licenses/by/4.0/).
+- The source code in this repository is licensed under the GPL-3.0 License (`LICENSE`).
+- The paper is licensed under [CC Y 4.0 License](https://creativecommons.org/licenses/by/4.0/).
 
 ## Paper Link
-The paper can be downloaded from [this link](https://www.arxiv.org/abs/2410.02003). Please cite our paper when using the dataset:
+The paper can be downloaded from [this link](https://www.arxiv.org/abs/2410.02003). Please cite our paper when using any of our content:
 
 ```
 @misc{dajkhosh2024terrAInavsimopensourcesimulation,
