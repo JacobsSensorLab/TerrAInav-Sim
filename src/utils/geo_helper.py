@@ -567,6 +567,17 @@ def calc_bbox_m(center_coords, bbox_m):
     return (top_left.latitude, top_left.longitude), (bottom_right.latitude, bottom_right.longitude)
 
 def get_map_dim_m(fov_d, agl_m, aspect_ratio):
+    """
+    Calculate map dimensions (width, height) in meters based on field of view, altitude, and aspect ratio.
+    Parameters:
+        - fov_d (float): Field of view in degrees.
+        - agl_m (float): Altitude above ground level in meters.
+        - aspect_ratio (float): Aspect ratio of the image.
+    Returns:
+        - tuple: A tuple containing width and height in meters, and altitude in meters.
+    Example:
+        - get_map_dim_m(90, 1000, 1.5) -> (1414.213562, 942.809041, 1000)
+    """
     # agl_m = agl_f * 0.3048 # convert feet to meters
     # Calculate diagonal in meters in image using fov and ar
     d_m = 2 * agl_m * np.tan(np.radians(fov_d/2))
