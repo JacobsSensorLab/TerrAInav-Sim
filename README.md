@@ -135,7 +135,7 @@ conda install ipykernel
 
 ## Licensing Information
 
-- The source code in this repository is licensed under the GPL-3.0 License (`LICENSE`).
+- The source code and the data in this repository is licensed under the GPL-3.0 License (`LICENSE`).
 - The paper is licensed under [CC Y 4.0 License](https://creativecommons.org/licenses/by/4.0/).
 
 ## Paper Link
