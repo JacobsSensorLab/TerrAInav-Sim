@@ -125,7 +125,6 @@ class terrAInav(VBN, ImageData):
             slightly different than the area captured by images in geo_helper.geo_calcs
 
         :return:
-        # todo: test new changes in this function
         """
         top_left = self.args.coords[0], self.args.coords[1]
         bottom_right = self.args.coords[2], self.args.coords[3]
@@ -319,7 +318,6 @@ class terrAInav(VBN, ImageData):
             - None: The function does not return any value but downloads the raster images to the specified directory.
         Example:
             - gen_raster_from_map((34.052235, -118.243683), (34.040713, -118.246769))
-            todo: rewrite with new changes in map tile api
         """
         ## Start Raster from TL of the map
         # get coordinates of the corners

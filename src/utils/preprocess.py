@@ -12,7 +12,6 @@ import cv2
 
 def preprocess(img, methods=[]):
     """
-
     :param img:
     :param methods:
     :return:

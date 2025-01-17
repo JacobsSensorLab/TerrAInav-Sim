@@ -30,15 +30,15 @@ def parse_args():
             'default': "35.16_-89.90_35.115_-89.823_120",
             'help':(
             'Input can be either a file or a formatted string.\n'
-            '1. If a string is entered, it should refer to a file with the following format (lat lon agl(feet)):\n'
+            '1. An address to a file: the file contant shoudl have the following format (lat lon agl(feet)):\n'
             '   34.052235 -118.243683 100\n'
             '   40.712776 -74.005974 50\n'
             '   51.507351 -0.127758 200\n'
             '   If a single download file is run, it will only take into account the first row.\n'
-            '2. The input can also be a string in the following format: TopLeftLat_TopLeftLon_BottoRightLat_BottomRightLon_AGL(f)\n'
+            '2. A string of the bounding box in the following format: TopLeftLat_TopLeftLon_BottoRightLat_BottomRightLon_AGL(f)\n'
             '   e.g., "35.22_-90.07_35.06_-89.73_400"\n'
             '   For single download, it will take the top-left coordinate as the central coordinates and discard the bottom-right.\n'
-            '3. Alternatively, input can be only the central coordinates and agl: "lat_lon_agl"\n')
+            '3. A string of the central coordinates and agl: "lat_lon_agl"\n')
         },
         'fov': {
             'type': float,
