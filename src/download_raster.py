@@ -6,6 +6,7 @@
     date: June 2024, JacobsSensorLab
 """
 import sys
+import time
 from src.utils import consts
 from src.data.terrainav import terrAInav
 
@@ -28,6 +29,7 @@ def main():
         - Set data directory to current directory if not specified.
         - Set overlap to 0 if not specified.
     """
+    t_1 = time.time()
     args = consts.ARGS
 
     aerial_data = terrAInav(
@@ -36,6 +38,7 @@ def main():
         data_dir=args.data_dir,
         overlap=args.overlap
         )
+    print('Preparation time', time.time()-t_1)
     aerial_data.config(download_raster=True)
 
     # To remove data with no available features

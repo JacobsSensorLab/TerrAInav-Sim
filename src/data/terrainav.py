@@ -5,6 +5,7 @@
     date: June 2023, JacobsSensorLab
 """
 import os
+import time
 import glob
 from pathlib import Path
 from matplotlib.streamplot import OutOfBounds
@@ -224,20 +225,29 @@ class terrAInav(VBN, ImageData):
 
         todo: more conditions for cleanup
         """
-
+        t_1 = time.time()
         self.check_data()
-
+        t_2 = time.time()
+        print('Map download Time', t_2-t_1, '(s)')
         io_helper.check_folder(log_dir=self.data_dir / self.data_info['x'])
         self.input_dir = io_helper.find_files(self.data_dir /
                                                  self.data_info['x'],
                                                  'jpg')
         if download_raster:
             self.complete_download()
-
+        t_3 = time.time()
+        print('Raster Download Time', t_3-t_2, '(s) \n=',
+              (t_3-t_2)/self.log.n_raster_imgs.total, '(s) per raster image')
         self.input_dir = io_helper.find_files(self.data_dir /
                                                  self.data_info['x'],
                                                  'jpg')
+
+
         super().config()
+        t_4 = time.time()
+        print('Post Process/ Cleaning Time', t_4-t_3, '(s) \n=',
+              (t_4-t_3)/self.log.n_raster_imgs.total, '(s) per raster image')
+
 
 
     def complete_download(self):
