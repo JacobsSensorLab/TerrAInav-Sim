@@ -175,7 +175,7 @@ class terrAInav(VBN, ImageData):
             self.log.n_raster_imgs.x *\
                 self.log.n_raster_imgs.y
 
-        rounded_strings = [str(round(x, 8)) for x in [self.log.center.lat, self.log.center.lon]]
+        rounded_strings = [str(round(x, 7)) for x in [self.log.center.lat, self.log.center.lon]]
         map_label = '_'.join(
             rounded_strings +\
             [str(self.args.coords[-1]),
@@ -403,8 +403,8 @@ class terrAInav(VBN, ImageData):
 
                         out_name = str(i) + '_' \
                                 + str(j) + '_' \
-                                + str(round(phi, 8)) \
-                                + '_' + str(round(lamda, 8)) \
+                                + str(round(phi, 7)) \
+                                + '_' + str(round(lamda, 7)) \
                                 + '_' + str(raster_zoom) + '.jpg'
 
                         output_dir = self.data_dir / self.data_info['x'] / out_name
