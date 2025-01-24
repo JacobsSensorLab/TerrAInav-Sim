@@ -178,13 +178,12 @@ class terrAInav(VBN, ImageData):
         rounded_strings = [str(round(x, 8)) for x in [self.log.center.lat, self.log.center.lon]]
         map_label = '_'.join(
             rounded_strings +\
-            [str(self.args.overlap),
-             str(self.args.coords[-1]),
+            [str(self.args.coords[-1]),
              str(self.args.fov),
              str(self.args.aspect_ratio[0]),
              str(self.args.aspect_ratio[0])]
         )
-        self.data_info['x'] += '_' + map_label
+        self.data_info['x'] += '_' + str(self.args.overlap) + map_label
         map_name =  map_label + ".jpg"
 
         map_img = geo_helper.collect_tiles(
@@ -192,7 +191,7 @@ class terrAInav(VBN, ImageData):
             [self.log.bottom_right.lat, self.log.bottom_right.lon],
             zoom=map_zoom,
             map_type=self.map_type,
-            resolution=2,
+            resolution=self.args.res_level,
         )
 
         pretty('Data detailed values before download:')
@@ -419,7 +418,7 @@ class terrAInav(VBN, ImageData):
                             curr_tl, curr_br,
                             zoom=raster_zoom,
                             map_type=self.map_type,
-                            resolution=2
+                            resolution=self.args.res_level
                             )
 
                         img.save(output_dir)

@@ -77,6 +77,10 @@ def parse_args():
             'default': 0,
             'help': 'Overlap of the camera field of view as a probability value between 0 to 1.'
         },
+        'res_level': {
+            'type': float,
+            'default': 2
+        },
         'batch_size': {
             'type': int,
             'default': 8,
