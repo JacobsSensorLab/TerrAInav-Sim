@@ -159,7 +159,7 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
 
                 # Paste the tile onto the stitched image
                 stitched_image.paste(image, (offset_x, offset_y))
-
+                del image
                 # Break the loop if successful
                 break
             except Exception as e:
@@ -194,6 +194,7 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
                                          tl_info[-1],
                                          tl_info[-2] + img_w,
                                          tl_info[-1] + img_h))
+    del stitched_image
     return cropped_image
 
 

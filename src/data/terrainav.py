@@ -5,6 +5,8 @@
     date: June 2023, JacobsSensorLab
 """
 import os
+import gc
+
 import glob
 from pathlib import Path
 from matplotlib.streamplot import OutOfBounds
@@ -183,7 +185,7 @@ class terrAInav(VBN, ImageData):
              str(self.args.aspect_ratio[0]),
              str(self.args.aspect_ratio[0])]
         )
-        self.data_info['x'] += '_' + str(self.args.overlap) + map_label
+        self.data_info['x'] += '_' + str(self.args.overlap) + '_' + map_label
         map_name =  map_label + ".jpg"
 
         map_img = geo_helper.collect_tiles(
@@ -435,6 +437,8 @@ class terrAInav(VBN, ImageData):
                    log=self)
 
         print('\t Number of rows and columns:', i, j)
+        gc.collect()
+
 
 
     def cleanup_data(self, entropy_thr=2.1):
