@@ -183,7 +183,7 @@ class terrAInav(VBN, ImageData):
             [str(self.args.coords[-1]),
              str(self.args.fov),
              str(self.args.aspect_ratio[0]),
-             str(self.args.aspect_ratio[0])]
+             str(self.args.aspect_ratio[1])]
         )
         self.data_info['x'] += '_' + str(self.args.overlap) + '_' + map_label
         map_name =  map_label + ".jpg"
