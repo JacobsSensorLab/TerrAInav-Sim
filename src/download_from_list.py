@@ -6,7 +6,6 @@
     date: July 2024, JacobsSensorLab
 """
 import sys
-import enum
 import pandas as pd
 import numpy as np
 from src.utils import consts

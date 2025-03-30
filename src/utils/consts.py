@@ -5,7 +5,6 @@
 """
 import math
 from pathlib import Path
-from turtle import update
 from src.utils.config import parse_args
 from src.utils.io_helper import str_to_floats
 

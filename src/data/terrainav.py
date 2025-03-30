@@ -6,7 +6,9 @@
 """
 import os
 import gc
-
+import pprint
+import datetime
+from types import SimpleNamespace
 import glob
 from pathlib import Path
 from matplotlib.streamplot import OutOfBounds
@@ -16,11 +18,6 @@ import pandas as pd
 from natsort import natsorted
 import skimage.measure
 import tensorflow as tf
-import datetime
-from types import SimpleNamespace
-import pprint
-import json
-
 
 from src.utils import io_helper, geo_helper, preprocess
 from src.utils.io_helper import pretty
@@ -148,9 +145,13 @@ class terrAInav(VBN, ImageData):
         ## Convert geolocation of the raster corners to utm
         # TL and BR points
         self.assign_log('top_left', ['x_utm', 'y_utm'],
-                        np.round(geo_helper.geo2utm(top_left[0], top_left[1], self.args.utm), 3))
+                        np.round(geo_helper.geo2utm(
+                            top_left[0], top_left[1], self.args.utm
+                            ), 3))
         self.assign_log('bottom_right', ['x_utm', 'y_utm'],
-                        np.round(geo_helper.geo2utm(bottom_right[0], bottom_right[1], self.args.utm), 3))
+                        np.round(geo_helper.geo2utm(
+                            bottom_right[0], bottom_right[1], self.args.utm
+                            ), 3))
 
         ## Convert geolocation of the raster corners to utm
         # Top Left point in meters
@@ -166,18 +167,19 @@ class terrAInav(VBN, ImageData):
             round(self.log.map_size.x_m * self.log.map_size.y_m, 3)
 
         for attr in ['x', 'y']:
-             setattr(self.log.n_raster_imgs, attr,
-                     int(
-                         (getattr(self.log.map_size, attr + '_m')) /\
-                         (getattr(self.log.single_img_size, attr + '_m') * (1 - self.overlap))
-                         )
-                     )
+            setattr(self.log.n_raster_imgs, attr,
+                    int(
+                        (getattr(self.log.map_size, attr + '_m')) /\
+                        (getattr(self.log.single_img_size, attr + '_m') * (1 - self.overlap))
+                        )
+                    )
 
         self.log.n_raster_imgs.total = \
             self.log.n_raster_imgs.x *\
                 self.log.n_raster_imgs.y
 
-        rounded_strings = [str(round(x, 7)) for x in [self.log.center.lat, self.log.center.lon]]
+        rounded_strings = [str(round(x, 7))
+                           for x in [self.log.center.lat, self.log.center.lon]]
         map_label = '_'.join(
             rounded_strings +\
             [str(self.args.coords[-1]),
@@ -273,7 +275,8 @@ class terrAInav(VBN, ImageData):
             meta_data = [[os.path.basename(path_)] \
                 + list(map(
                     float,
-                    os.path.basename(path_).split('.jpg')[0].split('_'))) for path_ in self.input_dir
+                    os.path.basename(path_).split('.jpg')[0].split('_')))
+                        for path_ in self.input_dir
                 ]
             self.meta_df = pd.DataFrame(
                 meta_data,
@@ -290,9 +293,30 @@ class terrAInav(VBN, ImageData):
 
         self.labels = self.meta_df.loc[:, ['Lat', 'Lon', 'Alt']]
 
-    def calc_entropy(self, dir):
+    def calc_entropy(self, imgs_dir):
+        """
+        Calculate the entropy of an image specified in a row of a dataset.
+        Parameters:
+            - imgs_dir (str): The directory path where the image files are located.
+        Returns:
+            - function: A nested function, `entropy_per_row`,
+            which calculates entropy for an image specified in a given row.
+        Example:
+            - calc_entropy(dir_path)(row) -> 5.27
+        """
         def entropy_per_row(row):
-            img = self.imread(Path(dir) / Path(row['img_names']))
+            """
+            Calculate the Shannon entropy of a given image row.
+            Parameters:
+                - row (dict): A dictionary containing image metadata,
+                specifically 'img_names' which indicates the name or path of the image file.
+            Returns:
+                - float: The Shannon entropy value of the specified image,
+                representing the level of uncertainty or randomness.
+            Example:
+                - entropy_per_row({'img_names': 'example_image.jpg'}) -> 5.23
+            """
+            img = self.imread(Path(imgs_dir) / Path(row['img_names']))
             entropy = skimage.measure.shannon_entropy(img)
             return entropy
         return entropy_per_row
@@ -316,7 +340,8 @@ class terrAInav(VBN, ImageData):
                 Name of the last downloaded image to resume the download process, if applicable.
                 Default is -1.
         Returns:
-            - None: The function does not return any value but downloads the raster images to the specified directory.
+            - None: The function does not return any value
+            but downloads the raster images to the specified directory.
         Example:
             - gen_raster_from_map((34.052235, -118.243683), (34.040713, -118.246769))
         """
@@ -525,4 +550,4 @@ class terrAInav(VBN, ImageData):
             - assign_log("error", ["code", "message"], [404, "Not Found"])
         """
         for attr, value in zip(log_attrs, values):
-                setattr(getattr(self.log, feature), attr, value)
+            setattr(getattr(self.log, feature), attr, value)

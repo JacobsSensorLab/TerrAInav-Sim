@@ -4,7 +4,7 @@
     author: spdkh
     date: 2023, JacobsSensorLab
 """
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image

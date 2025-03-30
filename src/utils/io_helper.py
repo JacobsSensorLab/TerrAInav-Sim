@@ -125,7 +125,8 @@ def pretty(*objects, sep=' ', end='\n', log=None, header='', color="\033[93m"):
         - sep (str): Separator between objects. Defaults to a space.
         - end (str): String appended after the last object. Defaults to a newline.
         - log (str, optional): Optional log information to be printed and saved. Defaults to None.
-        - header (str): Header text to be displayed at the top of the output. Defaults to an empty string.
+        - header (str): Header text to be displayed at the top of the output.
+                        Defaults to an empty string.
         - color (str): Text color in ANSI escape sequences. Defaults to yellow.
     Returns:
         - None: This function does not return any value.
@@ -168,6 +169,16 @@ def pretty(*objects, sep=' ', end='\n', log=None, header='', color="\033[93m"):
 
 
 def pretty_args(args):
+    """Format command-line arguments into a readable string.
+    Parameters:
+        - args (Namespace): An object containing attributes for each command-line argument.
+    Returns:
+        - str:
+        A formatted string displaying the non-None arguments and their values in a tabular form.
+    Example:
+        - pretty_args(Namespace(foo=1, bar='test', baz=None))
+        -> 'foo                 = 1           |     bar                 = test        |     '
+    """
     text = ''
     index = 0
     for key, value in vars(args).items():
@@ -209,9 +220,20 @@ def save_namespace(namespace, file, prefix=""):
                 file.write(f"{prefix}{attr} = {value}\n")
 
 def str_to_floats(value):
+    """
+    Converts a string with underscores into a list of floats,
+    or returns the string if conversion fails.
+    Parameters:
+        - value (str): A string consisting of numbers separated by underscores.
+    Returns:
+        - list or str: A list of floats if conversion is successful,
+        or the original string if conversion fails.
+    Example:
+        - str_to_floats("1.0_2.5_3.75") -> [1.0, 2.5, 3.75]
+    """
     # Try to parse the value as a list of floats
     try:
         return [float(x) for x in value.split('_')]
-    except Exception as error:
+    except Exception:
         # If parsing fails, return the value as a string
         return value

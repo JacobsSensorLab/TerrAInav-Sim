@@ -264,3 +264,4 @@ class VBN(ImageData):
         image = tf.image.convert_image_dtype(image, tf.uint8)
 
         return image
+    

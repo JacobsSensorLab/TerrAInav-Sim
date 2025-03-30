@@ -102,6 +102,19 @@ def preprocess_real(real_img, blurr=5):
 
 
 def tf_equalize_histogram(image):
+    """
+    Equalize the histogram of a grayscale image using TensorFlow.
+    Parameters:
+        - image (tf.Tensor):
+            A 2D tensor representing a grayscale image with pixel values ranging from 0 to 255.
+    Returns:
+        - tf.Tensor:
+            A 3D tensor representing the equalized histogram image with an added channel dimension.
+    Example:
+        - tf_equalize_histogram(tf.constant([[0, 128], [255, 64]], dtype=tf.uint8))
+        -> tf.Tensor shape=(2, 2, 1), dtype=uint8,
+        numpy=array([[[  0], [192]], [[255], [ 96]]], dtype=uint8)
+    """
     values_range = tf.constant([0., 255.], dtype = tf.float32)
     histogram = tf.histogram_fixed_width(tf.cast(image, tf.float32), values_range, 256)
     cdf = tf.cumsum(histogram)

@@ -8,6 +8,7 @@ from typing import Tuple, List
 import math
 import time
 from io import BytesIO
+from concurrent.futures import ThreadPoolExecutor
 
 from geopy.distance import geodesic
 from geopy.point import Point
@@ -16,8 +17,7 @@ import pyproj
 import numpy as np
 import tensorflow as tf
 import requests
-from concurrent.futures import ThreadPoolExecutor
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 from src.utils import consts
@@ -104,7 +104,8 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
     Returns:
         - Image: A PIL Image object of the stitched map covering the specified region.
     Example:
-        - collect_tiles((37.7749, -122.4194), (37.7649, -122.4094), 15, 'roadmap', 0) -> <PIL.Image.Image image mode=RGB size=XxY at 0x...>
+        - collect_tiles((37.7749, -122.4194), (37.7649, -122.4094), 15, 'roadmap', 0)
+        -> <PIL.Image.Image image mode=RGB size=XxY at 0x...>
     Notebook: https://colab.research.google.com/drive/1p9kFCQbDPRsJJM6RXsrsNySCSGSrTnFc?usp=sharing
     """
     def generate_tile_info(loc, zoom):
@@ -114,7 +115,9 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
             - loc (tuple): A tuple containing latitude and longitude coordinates.
             - zoom (int): The zoom level for which the tile information is calculated.
         Returns:
-            - tuple: A tuple containing the tile x-coordinate, tile y-coordinate, pixel x offset, and pixel y offset.
+            - tuple:
+                A tuple containing the tile x-coordinate, tile y-coordinate,
+                pixel x offset, and pixel y offset.
         Example:
             - generate_tile_info((37.7749, -122.4194), 10) -> (163, 395, 103, 120)
         """
@@ -122,7 +125,8 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
         n = 2 ** zoom
         lat, lon = loc
         tile_x = (lon + 180.0) / 360.0 * n
-        tile_y = (1.0 - math.log(math.tan(math.radians(lat)) + 1.0 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n
+        tile_y = (1.0 - math.log(math.tan(math.radians(lat)) \
+            + 1.0 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n
 
         pixel_x = int(tile_x * 256 - int(tile_x) * 256)
         pixel_y = int(tile_y * 256 - int(tile_y) * 256)
@@ -135,8 +139,10 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
         Parameters:
             - tile_id_x (int): X-coordinate of the tile to be fetched.
             - tile_id_y (int): Y-coordinate of the tile to be fetched.
-            - map_type (str): Type of map to fetch the tile from ('satellite', 'roadmap', 'terrain').
-            - max_retries (int, optional): The maximum number of retries for fetching the tile. Defaults to 10.
+            - map_type (str):
+                Type of map to fetch the tile from ('satellite', 'roadmap', 'terrain').
+            - max_retries (int, optional):
+                The maximum number of retries for fetching the tile. Defaults to 10.
         Returns:
             - None
         Example:
@@ -164,10 +170,14 @@ def collect_tiles(tl, br, zoom, map_type, resolution):
                 break
             except Exception as e:
                 if attempt < max_retries:
-                    print(f"Attempt {attempt} failed for tile ({tile_id_x}, {tile_id_y}). Retrying...")
+                    print(
+                        f"Attempt {attempt} failed for tile ({tile_id_x}, {tile_id_y}). Retrying..."
+                        )
                     time.sleep(1)  # Optional: add a small delay between retries
                 else:
-                    print(f"Error fetching tile ({tile_id_x}, {tile_id_y}) after {max_retries} attempts: {e}")
+                    print(
+                        f"Error fetching tile ({tile_id_x}, {tile_id_y}) after {max_retries} attempts: {e}"
+                        )
 
     zoom = min(zoom + resolution, 22)
 
@@ -239,7 +249,8 @@ def calc_bbox_api(
         Converts a point from pixel coordinates to latitude and longitude coordinates.
         """
         lon = (pt['x'] - consts.tile_center_p['x']) / consts.pixel_per_degree
-        lat = math.degrees(math.asin(math.tanh((pt['y'] - consts.tile_center_p['y']) / -consts.pixel_per_radian)))
+        lat = math.degrees(math.asin(math.tanh((pt['y'] - consts.tile_center_p['y']) \
+            / -consts.pixel_per_radian)))
         return lat, lon
 
     # the width and height of the map in pixels, adjusted by the pixel_size
@@ -569,7 +580,8 @@ def calc_bbox_m(center_coords, bbox_m):
 
 def get_map_dim_m(fov_d, agl_m, aspect_ratio):
     """
-    Calculate map dimensions (width, height) in meters based on field of view, altitude, and aspect ratio.
+    Calculate map dimensions (width, height) in meters
+    based on field of view, altitude, and aspect ratio.
     Parameters:
         - fov_d (float): Field of view in degrees.
         - agl_m (float): Altitude above ground level in meters.
@@ -590,6 +602,16 @@ def get_map_dim_m(fov_d, agl_m, aspect_ratio):
 
 
 def get_utm_epsg(coords):
+    """
+    Determine the UTM EPSG code for a given latitude and longitude.
+    Parameters:
+        - coords (tuple): A tuple containing latitude and longitude as floats.
+    Returns:
+        - str: The EPSG code in the format 'EPSG:XXXXX'
+        corresponding to the UTM zone and hemisphere.
+    Example:
+        - get_utm_epsg((34.0522, -118.2437)) -> 'EPSG:32611'
+    """
     lat, lon = coords
     # Determine UTM zone number
     zone_number = int((lon + 180) / 6) + 1
