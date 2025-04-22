@@ -1,6 +1,6 @@
-# terrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data
+# terrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Map-Based Data
 
-Capturing real-world aerial images is challenging due to limited availability and conditions that make it nearly impossible to access all desired images from any location. The complexity increases when multiple locations are involved. Traditional solutions, such as flying a UAV (Unmanned Aerial Vehicle) to take pictures or using existing research databases, have significant limitations. terrAInav Sim offers a compelling alternative by simulating a UAV to capture aerial images with real-world visible-band specifications. This open-source tool allows users to specify the top-left and bottom-right coordinates of any region on a map. Without the need to physically fly a drone, the virtual UAV performs a raster search to capture satellite images using the Google Maps API. Users can define parameters such as flight altitude in meters, aspect ratio and diagonal field of view of the camera, and the overlap between consecutive images. terrAInav Sim's capabilities range from capturing a few low-altitude images for basic applications to generating extensive datasets of entire cities for complex tasks like deep learning. This versatility makes terrAInav a valuable tool for various applications in environmental monitoring, construction, and city management. The open-source nature of the tool also allows for extending the raster search to any other desired path. It is important to note that while the search can theoretically be conducted worldwide, the most accurate results are achieved if users stay within the same or nearby UTM (Universal Transverse Mercator) zone. Therefore, specifying the zone for the program is recommended. Using terrAInav Sim, a few examples of Memphis, TN are also provided.
+Capturing real-world aerial images for vision-based navigation (VBN) is challenging due to limited availability and conditions that make it nearly impossible to access all desired images from any location. The complexity increases when multiple locations are involved. State-of-the-art solutions, such as deploying UAVs (unmanned aerial vehicles) for aerial imaging or relying on existing research databases, come with significant limitations. TerrAInav Sim offers a compelling alternative by simulating a UAV to capture bird’s-eye view map-based images at zero yaw with real-world visible-band specifications. This open-source tool allows users to specify the bounding box (top-left and bottom-right) coordinates of any region on a map. Without the need to physically fly a drone, the virtual Python UAV performs a raster search to capture images. Users can define parameters such as the flight altitude, aspect ratio, diagonal field of view of the camera, and the overlap between consecutive images. TerrAInav Sim’s capabilities range from capturing a few low-altitude images for basic applications to generating extensive datasets of entire cities for complex tasks like deep learning. This versatility makes TerrAInav a valuable tool for not only VBN but also other applications, including environmental monitoring, construction, and city management. The open-source nature of the tool also allows for the extension of the raster search to other missions. A dataset of Memphis, TN, has been provided along with this simulator. A supplementary dataset is also provided, which includes data from a 3D world generation package for comparison.
 
 # Getting Started:
 ## Requirements:
@@ -15,8 +15,8 @@ Capturing real-world aerial images is challenging due to limited availability an
 <details>
   <summary>Setup the environment (Highly recommended)</summary>
 
-    conda create -n "terrAInav-sim" python=3.10
-    conda activate terrAInav-sim
+    conda create -n "terrainav-sim" python=3.10
+    conda activate terrainav-sim
 
 </details>
 
@@ -140,16 +140,19 @@ conda install ipykernel
 - The paper is licensed under [CC Y 4.0 License](https://creativecommons.org/licenses/by/4.0/).
 
 ## Paper Link
-The paper can be downloaded from [this link](https://www.arxiv.org/abs/2410.02003). Please cite our paper when using any of our content:
+The paper can be downloaded from [this link](https://www.mdpi.com/2072-4292/17/8/1454). Please cite our paper when using any of our content:
 
 ```
-@misc{dajkhosh2024terrAInavsimopensourcesimulation,
-      title={terrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Satellite Data},
-      author={S. Parisa Dajkhosh and Peter M. Le and Orges Furxhi and Eddie L. Jacobs},
-      year={2024},
-      eprint={2410.02003},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2410.02003},
+@Article{rs17081454,
+AUTHOR = {Dajkhosh, Seyedeh Parisa and Le, Peter M. and Furxhi, Orges and Jacobs, Eddie L.},
+TITLE = {TerrAInav Sim: An Open-Source Simulation of UAV Aerial Imaging from Map-Based Data},
+JOURNAL = {Remote Sensing},
+VOLUME = {17},
+YEAR = {2025},
+NUMBER = {8},
+ARTICLE-NUMBER = {1454},
+URL = {https://www.mdpi.com/2072-4292/17/8/1454},
+ISSN = {2072-4292},
+DOI = {10.3390/rs17081454}
 }
 ```
