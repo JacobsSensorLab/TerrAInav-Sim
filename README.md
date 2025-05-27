@@ -64,7 +64,7 @@ Or:
 
 for more configuration parameters checkout src/utils/config.py or type:
 
-    python -m src.main --help
+    python -m src.download_raster --help
 
 - **For example:**
 
